@@ -34,7 +34,8 @@ sleep 2
 while true; do
     echo "1. Установить Docker (Install Docker)"
     echo "2. Установить ноду TITAN (Install TITAN node)"
-    echo "3. Выход (Exit)"
+    echo "3. Рестарт ноды (Restart node)"
+    echo "4. Выход (Exit)"
     echo ""
     read -p "Выберите опцию (Select option): " option
 
@@ -70,10 +71,11 @@ while true; do
                sudo apt update &&
                sudo apt install -y docker-ce docker-ce-cli containerd.io &&
                sudo usermod -aG docker $USER; then
-                echo -e "Установка Docker (Docker installation): Успешно (\e[32mSuccess\e[0m) \n \e[33mДля завершения настройки Docker выполните команду: exit или откройте новый терминал.\e[0m"
+                echo -e "Установка Docker (Docker installation): Успешно (\e[32mSuccess\e[0m) \n \e[33mДля завершения настройки Docker: \n 1) завершите скрипт \n 2) напишите exit \n 3) откройте терминал заново.\e[0m"
             else
                 echo -e "Установка Docker (Docker installation): Ошибка (\e[31mError\e[0m)"
                 exit 1
+            fi
             ;;
         2)
             echo "Установка ноды (Node installation)..."
@@ -110,6 +112,7 @@ while true; do
                 echo -e "Контейнер запущен (Container started): Успешно (\e[32mSuccess\e[0m)"
             else
                 echo -e "Контейнер запущен (Container started): Ошибка (\e[31mError\e[0m)"
+                exit 1
             fi
 
 
@@ -120,13 +123,22 @@ while true; do
                 echo -e "Ключи связаны (Keys are connected): Успешно (\e[32mSuccess\e[0m)"
             else
                 echo -e "Ключи связаны (Keys are connected): Ошибка (\e[31mError\e[0m)"
+                exit 1
             fi
 
             echo -e "\e[32m------ SUCCESS!!! ------\e[0m"
             echo -e "Titan node installation completed"
             ;;
-
         3)
+            echo "Выполняем рестрат ноды (Restarting node)..."
+            if docker run -d -v ~/.titanedge:/root/.titanedge nezha123/titan-edge; then
+                echo -e "Рестарт выполнен (Restart completed): Успешно (\e[32mSuccess\e[0m)"
+            else
+                echo -e "Рестарт выполнен (Restart completed): Ошибка (\e[31mSuccess\e[0m)"
+                exit 1
+            fi
+            ;;
+        4)
             echo -e "\e[31mСкрипт остановлен (Script stopped)\e[0m"
             exit 0
             ;;
