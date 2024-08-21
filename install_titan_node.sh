@@ -27,25 +27,26 @@ echo -e '----------------------------------\/____/------------------------------
 echo -e '-----------------------------------------------------------------------'
 echo -e '\e[0m'
 
-echo -e "\n Подписаться на мой канал Beloglazov invest, \n чтобы быть в курсе самых актуальных нод и активностей - https://t.me/beloglazovinvest\n"
+echo -e "\n Подписаться на мой канал Beloglazov invest, \n чтобы быть в курсе самых актуальных нод и активностей \n https://t.me/beloglazovinvest\n"
 
 sleep 2
 
 while true; do
-    echo "1. Установить ноду TITAN (Install TITAN node)"
-    echo "2. Выход (Exit)"
+    echo "1. Установить Docker (Install Docker)"
+    echo "2. Установить ноду TITAN (Install TITAN node)"
+    echo "3. Выход (Exit)"
+    echo ""
     read -p "Выберите опцию (Select option): " option
 
     case $option in
         1)
-            echo "Установка ноды (Node installation)..."
-            read -p "Enter Your Identity Code: " identity_code
-
             # update packages
             echo "Обновление пакетов (updating packages) ... "
-            sleep 1
-            if sudo apt update -y && sudo apt-get update; then
+            sleep 2
+            if sudo apt update -y && sudo apt-get upgrade; then
+                sleep 1
                 echo -e "Обновление пакетов (updating packages): Успешно (\e[32mSuccess\e[0m)"
+                sleep 1
             else
                 echo -e "Обновление пакетов (updating packages): Ошибка (\e[31mError\e[0m)"
                 exit 1
@@ -53,7 +54,7 @@ while true; do
 
             # install additional packages
             echo "Установка дополнительных пакетов (installing additional packages)..."
-            sleep 1
+            sleep 2
             if sudo apt install -y ca-certificates curl gnupg lsb-release; then
                 echo -e "Установка пакетов (packages installation): Успешно (\e[32mSuccess\e[0m)"
             else
@@ -63,18 +64,32 @@ while true; do
 
             # Docker installation
             echo "Установка докера (installing Docker)..."
-            sleep 1
+            sleep 2
             if curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg &&
                echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null &&
                sudo apt update &&
                sudo apt install -y docker-ce docker-ce-cli containerd.io &&
-               sudo usermod -aG docker $USER &&
-               newgrp docker &&
-               sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &&
-               sudo chmod +x /usr/local/bin/docker-compose; then
-                echo -e "Установка Docker (Docker installation): Успешно (\e[32mSuccess\e[0m)"
+               sudo usermod -aG docker $USER; then
+                echo -e "Установка Docker (Docker installation): Успешно (\e[32mSuccess\e[0m) \n \e[33mДля завершения настройки Docker выполните команду: exit или откройте новый терминал.\e[0m"
             else
                 echo -e "Установка Docker (Docker installation): Ошибка (\e[31mError\e[0m)"
+                exit 1
+            ;;
+        2)
+            echo "Установка ноды (Node installation)..."
+            echo ""
+            sleep 2
+            read -p "Enter Your Identity Code: " identity_code
+
+
+            # install Docker Compose
+            echo "Установка Docker Compose (Docker Compose installation)..."
+            sleep 2
+            if sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &&
+               sudo chmod +x /usr/local/bin/docker-compose; then
+                echo -e "Установка Docker Compose (Docker Compose installation): Успешно (\e[32mSuccess\e[0m)"
+            else
+                echo -e "Установка Docker  Compose (Docker Compose installation): Ошибка (\e[31mError\e[0m)"
                 exit 1
             fi
 
@@ -111,7 +126,7 @@ while true; do
             echo -e "Titan node installation completed"
             ;;
 
-        2)
+        3)
             echo -e "\e[31mСкрипт остановлен (Script stopped)\e[0m"
             exit 0
             ;;
