@@ -145,7 +145,9 @@ while true; do
             exit 0
             ;;
         *)
+            echo ""
             echo -e "\e[31mНеверная опция\e[0m. Пожалуйста, выберите 1, 2. \n \e[31mInvalid option.\e[0m Please select 1, 2."
+            echo ""
             ;;
     esac
 done
