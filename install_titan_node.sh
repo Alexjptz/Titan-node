@@ -2,6 +2,10 @@
 tput reset
 tput civis
 
+show_orange() {
+    echo -e "\e[33m$1\e[0m"
+}
+
 show_orange " .___________. __  .___________.     ___      .__   __. " && sleep 0.2
 show_orange " |           ||  | |           |    /   \     |  \ |  | " && sleep 0.2
 show_orange "  ---|  |---- |  |  ---|  |----    /  ^  \    |   \|  | " && sleep 0.2
