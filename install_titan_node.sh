@@ -19,7 +19,8 @@ while true; do
     echo "1. Установить Docker (Install Docker)"
     echo "2. Установить ноду TITAN (Install TITAN node)"
     echo "3. Рестарт ноды (Restart node)"
-    echo "4. Выход (Exit)"
+    echo "4. Остановить ноду (Stop node)"
+    echo "5. Выход (Exit)"
     echo ""
     read -p "Выберите опцию (Select option): " option
 
@@ -117,7 +118,7 @@ while true; do
             ;;
         3)
             echo "Выполняем рестрат ноды (Restarting node)..."
-            if docker run -d -v ~/.titanedge:/root/.titanedge nezha123/titan-edge; then
+            if docker run --name titan -d -v ~/.titanedge:/root/.titanedge nezha123/titan-edge; then
                 echo -e "Рестарт выполнен (Restart completed): Успешно (\e[32mSuccess\e[0m)"
             else
                 echo -e "Рестарт выполнен (Restart completed): Ошибка (\e[31mSuccess\e[0m)"
@@ -125,6 +126,23 @@ while true; do
             fi
             ;;
         4)
+            #  stop node
+            show_orange "Останавливаем ноду (Stopping node)..."
+            sleep 1
+            if docker stop titan; then
+                sleep 1
+                echo ""
+                show_green "Успешно (Success)"
+                echo ""
+            else
+                sleep 1
+                echo ""
+                show_red "Ошибка (Fail)"
+                echo ""
+            fi
+            echo ""
+            ;;
+        5)
             echo -e "\e[31mСкрипт остановлен (Script stopped)\e[0m"
             exit 0
             ;;
