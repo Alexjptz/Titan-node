@@ -110,11 +110,10 @@ while true; do
                 echo -e "Ключи связаны (Keys are connected): Ошибка (\e[31mError\e[0m)"
                 exit 1
             fi
-            echo ""
+            echo
             echo -e "\e[32m------ SUCCESS!!! ------\e[0m"
             echo -e "Titan node installation completed"
-            echo ""
-            echo -e "\n Подпишись на мой канал Beloglazov invest, \n чтобы быть в курсе самых актуальных нод и активностей \n https://t.me/beloglazovinvest\n"
+            echo
             ;;
         3)
             echo "Выполняем рестрат ноды (Restarting node)..."
