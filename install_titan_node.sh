@@ -58,6 +58,10 @@ process_notification() {
     sleep 1
 }
 
+show_green() {
+    echo -e "\e[32m$1\e[0m"
+}
+
 while true; do
     print_logo
     echo "1. Подготовка (Preparation)"
