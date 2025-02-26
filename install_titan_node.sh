@@ -52,6 +52,12 @@ incorrect_option () {
     echo ""
 }
 
+process_notification() {
+    local message="$1"
+    show_orange "$message"
+    sleep 1
+}
+
 while true; do
     print_logo
     echo "1. Подготовка (Preparation)"
