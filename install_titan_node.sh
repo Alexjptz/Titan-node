@@ -6,20 +6,58 @@ show_orange() {
     echo -e "\e[33m$1\e[0m"
 }
 
-show_orange " .___________. __  .___________.     ___      .__   __. " && sleep 0.2
-show_orange " |           ||  | |           |    /   \     |  \ |  | " && sleep 0.2
-show_orange "  ---|  |---- |  |  ---|  |----    /  ^  \    |   \|  | " && sleep 0.2
-show_orange "     |  |     |  |     |  |       /  /_\  \   |  .    | " && sleep 0.2
-show_orange "     |  |     |  |     |  |      /  _____  \  |  |\   | " && sleep 0.2
-show_orange "     |__|     |__|     |__|     /__/     \__\ |__| \__| " && sleep 0.2
-echo ""
-sleep 1
+show_red() {
+    echo -e "\e[31m$1\e[0m"
+}
+
+print_logo () {
+    echo
+    show_orange " .___________. __  .___________.     ___      .__   __. " && sleep 0.2
+    show_orange " |           ||  | |           |    /   \     |  \ |  | " && sleep 0.2
+    show_orange "  ---|  |---- |  |  ---|  |----    /  ^  \    |   \|  | " && sleep 0.2
+    show_orange "     |  |     |  |     |  |       /  /_\  \   |  .    | " && sleep 0.2
+    show_orange "     |  |     |  |     |  |      /  _____  \  |  |\   | " && sleep 0.2
+    show_orange "     |__|     |__|     |__|     /__/     \__\ |__| \__| " && sleep 0.2
+    echo
+    sleep 1
+}
+
+run_commands() {
+    local commands="$*"
+
+    if eval "$commands"; then
+        sleep 1
+        echo ""
+        show_green "Успешно (Success)"
+        echo ""
+    else
+        sleep 1
+        echo ""
+        show_red "Ошибка (Fail)"
+        echo ""
+    fi
+}
+
+exit_script() {
+    show_red "Скрипт остановлен (Script stopped)"
+        echo ""
+        exit 0
+}
+
+incorrect_option () {
+    echo ""
+    show_red "Неверная опция. Пожалуйста, выберите из тех, что есть."
+    echo ""
+    show_red "Invalid option. Please choose from the available options."
+    echo ""
+}
 
 while true; do
-    echo "1. Установить Docker (Install Docker)"
-    echo "2. Установить ноду TITAN (Install TITAN node)"
-    echo "3. Рестарт ноды (Restart node)"
-    echo "4. Остановить ноду (Stop node)"
+    print_logo
+    echo "1. Подготовка (Preparation)"
+    echo "2. Установка (Installation)"
+    echo "3. Управление (Operational)"
+    echo "4. Удаление (Delete)"
     echo "5. Выход (Exit)"
     echo ""
     read -p "Выберите опцию (Select option): " option
@@ -61,6 +99,9 @@ while true; do
                 echo -e "Установка Docker (Docker installation): Ошибка (\e[31mError\e[0m)"
                 exit 1
             fi
+            echo
+            show_green "--- ПОГОТОВКА ЗАЕРШЕНА. PREPARATION COMPLETED ---"
+            echo
             ;;
         2)
             echo "Установка ноды (Node installation)..."
@@ -93,7 +134,7 @@ while true; do
             # Запускаем контейнер
             echo "Запускаем контейнер (Launching the container)..."
             sleep 1
-            if docker run --network=host -d -v ~/.titanedge:/root/.titanedge nezha123/titan-edge; then
+            if docker run --name titan --network=host -d -v ~/.titanedge:/root/.titanedge nezha123/titan-edge; then
                 echo -e "Контейнер запущен (Container started): Успешно (\e[32mSuccess\e[0m)"
             else
                 echo -e "Контейнер запущен (Container started): Ошибка (\e[31mError\e[0m)"
@@ -116,39 +157,74 @@ while true; do
             echo
             ;;
         3)
-            echo "Выполняем рестрат ноды (Restarting node)..."
-            if docker run --name titan -d -v ~/.titanedge:/root/.titanedge nezha123/titan-edge; then
-                echo -e "Рестарт выполнен (Restart completed): Успешно (\e[32mSuccess\e[0m)"
-            else
-                echo -e "Рестарт выполнен (Restart completed): Ошибка (\e[31mSuccess\e[0m)"
-                exit 1
-            fi
+            # OPERATIONAL
+            while true; do
+                show_green "------ OPERATIONAL MENU ------ "
+                echo "1. Рестарт (Restart)"
+                echo "2. Стоп (Stop)"
+                echo "3. Выход (Exit)"
+                echo
+                read -p "Выберите опцию (Select option): " option
+                echo
+                case $option in
+                    1)
+                        echo "Выполняем рестрат ноды (Restarting node)..."
+                        if docker run --name titan -d -v ~/.titanedge:/root/.titanedge nezha123/titan-edge; then
+                            echo -e "Рестарт выполнен (Restart completed): Успешно (\e[32mSuccess\e[0m)"
+                        else
+                            echo -e "Рестарт выполнен (Restart completed): Ошибка (\e[31mSuccess\e[0m)"
+                            exit 1
+                        fi
+                        ;;
+                    2)
+                        #  stop node
+                        show_orange "Останавливаем ноду (Stopping node)..."
+                        sleep 1
+                        run_commands "docker stop titan"
+                        ;;
+                    3)
+                        break
+                        ;;
+                    *)
+                        incorrect_option
+                        ;;
+                esac
+            done
             ;;
         4)
-            #  stop node
-            show_orange "Останавливаем ноду (Stopping node)..."
-            sleep 1
-            if docker stop titan; then
-                sleep 1
-                echo ""
-                show_green "Успешно (Success)"
-                echo ""
-            else
-                sleep 1
-                echo ""
-                show_red "Ошибка (Fail)"
-                echo ""
-            fi
-            echo ""
+            # Delete node
+            process_notification "Удаление (Deleting)..."
+            echo
+            while true; do
+                read -p "Удалить ноду? Delete node? (yes/no): " option
+
+                case "$option" in
+                    yes|y|Y|Yes|YES)
+                        process_notification "Останавливаем (Stopping) Chainbase..."
+                        run_commands "docker stop titan"
+
+                        process_notification "Чистим (Cleaning)..."
+                        run_commands "docker rmi nezha123/titan-edge"
+
+                        show_green "--- НОДА УДАЛЕНА. NODE DELETED. ---"
+                        break
+                        ;;
+                    no|n|N|No|NO)
+                        process_notification "Отмена (Cancel)"
+                        echo ""
+                        break
+                        ;;
+                    *)
+                        incorrect_option
+                        ;;
+                esac
+            done
             ;;
         5)
-            echo -e "\e[31mСкрипт остановлен (Script stopped)\e[0m"
-            exit 0
+            exit_script
             ;;
         *)
-            echo ""
-            echo -e "\e[31mНеверная опция\e[0m. Пожалуйста, выберите 1, 2. \n \e[31mInvalid option.\e[0m Please select 1, 2."
-            echo ""
+            incorrect_option
             ;;
     esac
 done
