@@ -210,7 +210,7 @@ while true; do
                         run_commands "docker stop titan"
 
                         process_notification "Чистим (Cleaning)..."
-                        run_commands "docker rmi nezha123/titan-edge"
+                        run_commands "docker rmi nezha123/titan-edge:latest"
 
                         show_green "--- НОДА УДАЛЕНА. NODE DELETED. ---"
                         break
