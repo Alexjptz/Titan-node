@@ -130,7 +130,7 @@ while true; do
             # Загружаем образ Titan
             echo "Скачиваем образ Titan (downloading Titan image)..."
             sleep 1
-            if docker pull nezha123/titan-edge && mkdir -p ~/.titanedge; then
+            if docker pull nezha123/titan-edge:latest && mkdir -p ~/.titanedge; then
                 echo -e "Образ скачан (image downloaded): Успешно (\e[32mSuccess\e[0m)"
             else
                 echo -e "Образ скачан (image downloaded): Ошибка (\e[31mError\e[0m)"
